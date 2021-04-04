@@ -6,12 +6,16 @@
        href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
-    <div class="nav-wrapper">
+    <div class="container">
     <form>
         <div>
             <input type="file" multiple id="Audiofile">
+            <button id="filesSelect" type="button" class="waves-effect waves-light btn-small">Select files</button>
         </div>
-            <button type="submit">Convert</button>
+            <!--<button type="submit">Convert</button>-->
+        <div>
+            <button id="convert" type="button" class="waves-effect waves-light btn-small">Convert</button>
+        </div>
     </form>
     </div>
 
@@ -20,15 +24,25 @@
         const {ipcRenderer} = electron;
 
         const form = document.querySelector('form');
-        form.addEventListener('submit', submitForm);
+        //form.addEventListener('submit', submitForm);
 
-        function submitForm(e){
-            e.preventDefault();
+        const BtnFilesSelect = document.getElementById('filesSelect');
+        const BtnConvert = document.getElementById('convert');
+
+        BtnFilesSelect.addEventListener('click', filesSelect);
+        BtnConvert.addEventListener('click', convert);
+
+        function filesSelect(e){
+
+        }
+
+        function convert(e){
             const Audiofiles = document.getElementById('Audiofile').files;
             Object.keys(Audiofiles).forEach((files) => {
                 ipcRenderer.send('Convert', Audiofiles[files].path, Audiofiles[files].name);
             });
         }
+
     </script>
 </body>
 </html>
