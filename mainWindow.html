@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AudioConv</title>
+    <link rel="stylesheet"
+       href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+    <div class="nav-wrapper">
+    <form>
+        <div>
+            <input type="file" multiple id="Audiofile">
+        </div>
+            <button type="submit">Convert</button>
+    </form>
+    </div>
+
+    <script>
+        const electron = require('electron');
+        const {ipcRenderer} = electron;
+
+        const form = document.querySelector('form');
+        form.addEventListener('submit', submitForm);
+
+        function submitForm(e){
+            e.preventDefault();
+            const Audiofiles = document.getElementById('Audiofile').files;
+            Object.keys(Audiofiles).forEach((files) => {
+                ipcRenderer.send('Convert', Audiofiles[files].path, Audiofiles[files].name);
+            });
+        }
+    </script>
+</body>
+</html>
