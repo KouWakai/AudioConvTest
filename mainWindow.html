@@ -4,16 +4,23 @@
     <title>AudioConv</title>
     <link rel="stylesheet"
        href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+       <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+       <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
     <div class="container">
     <form>
-        <div>
-            <button id="filesSelect" type="button" class="waves-effect waves-light btn-small">Select files</button>
-            <p class="flow-text" id="input-file"></p>
-        </div>
-        <div>
-            <button id="convert" type="button" class="waves-effect waves-light btn-small">Convert</button>
+        <div class="row pt-10">
+            <div class="col s6 center-align">
+                    <i class="medium material-icons icon-white">add_box</i>
+                    <pre class="m-12" id="input-file"> </pre>
+                    <button id="filesSelect" type="button" class="waves-effect waves-light btn">Select Wav files</button>
+            </div>
+            <div class="col s6 center-align">
+                    <i class="medium material-icons icon-white">cached</i>
+                    <pre class="m-12" id="after-convert"> </pre>
+                    <button id="convert" type="button" class="waves-effect waves-light btn">Encode to MP3!</button>
+            </div>
         </div>
     </form>
     </div>
@@ -23,7 +30,6 @@
         const { ipcRenderer } = electron;
 
         const form = document.querySelector('form');
-
         const BtnFilesSelect = document.getElementById('filesSelect');
         const BtnConvert = document.getElementById('convert');
 
@@ -47,6 +53,10 @@
         function convert(e){
                 ipcRenderer.send('Convert');
         }
+
+        ipcRenderer.on('convert-reply', (e, message) => {
+            document.getElementById('after-convert').innerHTML = message;
+        })
 
     </script>
 </body>
