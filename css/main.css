@@ -1,0 +1,25 @@
+body {
+    background-color: #202123;
+    color: #fff;
+}
+
+i.icon-white{
+    color: white;
+}
+
+i.bt-0{
+    bottom: 0;
+}
+
+div.pt-10{
+    padding-top: 160px;
+}
+
+.h-auto{
+    height: auto;
+}
+
+.m-12{
+    margin-top: 3px;
+    margin-bottom: 9px;
+}
