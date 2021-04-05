@@ -9,10 +9,9 @@
     <div class="container">
     <form>
         <div>
-            <input type="file" multiple id="Audiofile">
             <button id="filesSelect" type="button" class="waves-effect waves-light btn-small">Select files</button>
+            <p class="flow-text" id="input-file"></p>
         </div>
-            <!--<button type="submit">Convert</button>-->
         <div>
             <button id="convert" type="button" class="waves-effect waves-light btn-small">Convert</button>
         </div>
@@ -21,10 +20,9 @@
 
     <script>
         const electron = require('electron');
-        const {ipcRenderer} = electron;
+        const { ipcRenderer } = electron;
 
         const form = document.querySelector('form');
-        //form.addEventListener('submit', submitForm);
 
         const BtnFilesSelect = document.getElementById('filesSelect');
         const BtnConvert = document.getElementById('convert');
@@ -33,14 +31,21 @@
         BtnConvert.addEventListener('click', convert);
 
         function filesSelect(e){
-
+            ipcRenderer.invoke('file-open')
+            .then((result) => {
+                if(result.status == undefined){
+                    return(false);
+                }
+                if(!result.status){
+                    alert('Could not open the file\n${result.message');
+                    return(false);
+                }
+                document.getElementById('input-file').innerHTML = result.name;
+            })
         }
 
         function convert(e){
-            const Audiofiles = document.getElementById('Audiofile').files;
-            Object.keys(Audiofiles).forEach((files) => {
-                ipcRenderer.send('Convert', Audiofiles[files].path, Audiofiles[files].name);
-            });
+                ipcRenderer.send('Convert');
         }
 
     </script>
