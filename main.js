@@ -28,15 +28,20 @@ app.on('ready', () => {
         app.quit();
     });
 
-    // Catch item:add
+    // Catch Convert 
     ipcMain.on('Convert',function(e){
+        // Replace wav to mp3 (WIP)
         filename = filename.replace('wav', 'mp3');
+        // Set output location (path)
         const output = "./audio-files/" + filename;
+
+        // Set target file by path
         const encoder = new Lame({
             output: output,
             bitrate: 128,
         }).setFile(convname);
 
+        // Encode by node-lame
         encoder.encode()
             .then(() => {
                 // Encoding finished
@@ -45,31 +50,30 @@ app.on('ready', () => {
             .catch((error) => {
                 // Something went wrong
                 console.log(error);
-                console.log(encoder);
             });
     });
 
 });
 
 ipcMain.handle('file-open', async (event) => {
-    // ファイルを選択
+    // Open dialog
     const paths = dialog.showOpenDialogSync(mainWindow, {
-      buttonLabel: '開く',  // 確認ボタンのラベル
+      buttonLabel: 'open',
       filters: [
-        { name: 'Text', extensions: ['audiofiles', 'wav'] },
+        { name: 'Audiofiles', extensions: ['audiofiles', 'wav'] },
       ],
       properties:[
-        'openFile',         // ファイルの選択を許可
-        'createDirectory',  // ディレクトリの作成を許可 (macOS)
+        'openFile',
+        'createDirectory',
       ]
     });
 
-    // キャンセルで閉じた場合
+    // when closes dialog without opening a file
     if( paths === undefined ){
       return({status: undefined});
     }
 
-    // ファイルの内容を返却
+    // get files contents
     try {
       const path = paths[0];
       convname = path;
