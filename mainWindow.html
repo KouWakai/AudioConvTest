@@ -10,7 +10,7 @@
 <body>
     <div class="container">
     <form>
-        <div class="row pt-10">
+        <div class="row pt-160">
             <div class="col s6 center-align">
                     <i class="medium material-icons icon-white">add_box</i>
                     <pre class="m-12" id="input-file"> </pre>
@@ -29,13 +29,16 @@
         const electron = require('electron');
         const { ipcRenderer } = electron;
 
+        // Get html elements
         const form = document.querySelector('form');
         const BtnFilesSelect = document.getElementById('filesSelect');
         const BtnConvert = document.getElementById('convert');
 
+        // Adding Eventlistner to each button
         BtnFilesSelect.addEventListener('click', filesSelect);
         BtnConvert.addEventListener('click', convert);
 
+        // File open dialog event
         function filesSelect(e){
             ipcRenderer.invoke('file-open')
             .then((result) => {
@@ -43,17 +46,19 @@
                     return(false);
                 }
                 if(!result.status){
-                    alert('Could not open the file\n${result.message');
+                    alert('Could not open the file\n${result.message}');
                     return(false);
                 }
                 document.getElementById('input-file').innerHTML = result.name;
             })
         }
 
+        // Convert button
         function convert(e){
                 ipcRenderer.send('Convert');
         }
 
+        // Show complete message when converting is finished
         ipcRenderer.on('convert-reply', (e, message) => {
             document.getElementById('after-convert').innerHTML = message;
         })

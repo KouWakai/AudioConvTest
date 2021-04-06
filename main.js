@@ -3,10 +3,9 @@ const url = require('url');
 const Lame = require("node-lame").Lame;
 
 const {app, BrowserWindow, ipcMain, dialog, Menu} = electron;
-const nodepath = require('path');
+const path = require('path');
 
-let { convname,filename} = '';
-
+let { cnvfilename,filename} = '';
 let mainWindow;
 
 app.on('ready', () => {
@@ -20,7 +19,7 @@ app.on('ready', () => {
     });
     // Load html into window
     mainWindow.loadURL(url.format({
-        pathname: nodepath.join(__dirname, 'mainWindow.html'),
+        pathname: path.join(__dirname, 'mainWindow.html'),
         protocol:'file:',
         slashes: true
     }));
@@ -28,26 +27,21 @@ app.on('ready', () => {
     mainWindow.on('closed', function(){
         app.quit();
     });
-
-    const mainMenu = Menu.buildFromTemplate(mainMenuTemplate);
-
-    Menu.setApplicationMenu(mainMenu);
     mainWindow.removeMenu();
-
 });
 
 // Catch Convert
 ipcMain.on('Convert',function(e){
   // Replace wav to mp3 (WIP)
   filename = filename.replace('wav', 'mp3');
-  // Set output location (path)
+  // Set output location
   const output = "./output/" + filename;
 
   // Set target file by path
   const encoder = new Lame({
       output: output,
       bitrate: 128,
-  }).setFile(convname);
+  }).setFile(cnvfilename);
 
   // Encode by node-lame
   encoder.encode()
@@ -62,9 +56,9 @@ ipcMain.on('Convert',function(e){
       });
 });
 
+// File-open dialog
 ipcMain.handle('file-open', async (event) => {
-    // Open dialog
-    const paths = dialog.showOpenDialogSync(mainWindow, {
+    const filepaths = dialog.showOpenDialogSync(mainWindow, {
       buttonLabel: 'open',
       filters: [
         { name: 'Audiofiles', extensions: ['audiofiles', 'wav'] },
@@ -76,15 +70,15 @@ ipcMain.handle('file-open', async (event) => {
     });
 
     // when closes dialog without opening a file
-    if( paths === undefined ){
+    if( filepaths === undefined ){
       return({status: undefined});
     }
 
     // get files contents
     try {
-      const path = paths[0];
-      convname = path;
-      filename = nodepath.basename(path);
+      const  filepath = filepaths[0];
+      cnvfilename = filepath;
+      filename = path.basename(filepath);
 
       return({
         status: true,
@@ -96,28 +90,3 @@ ipcMain.handle('file-open', async (event) => {
       return({status:false, message:error.message});
     }
   });
-
-  const mainMenuTemplate = [
-    {
-      label : ' '
-    }
-  ]
-
-  // Add developer tools option if in dev
-if(process.env.NODE_ENV !== 'production'){
-  mainMenuTemplate.push({
-    label: 'Developer Tools',
-    submenu:[
-      {
-        role: 'reload'
-      },
-      {
-        label: 'Toggle DevTools',
-        accelerator:process.platform == 'darwin' ? 'Command+I' : 'Ctrl+I',
-        click(item, focusedWindow){
-          focusedWindow.toggleDevTools();
-        }
-      }
-    ]
-  });
-}
