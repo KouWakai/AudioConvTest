@@ -8,7 +8,7 @@ This app uses node-lame and electron to encode wav to mp3 in really simple way l
 clone repository and run 'npm install' , then 'npm start' after run those commands the app will be launched.
 
 # Usage
-As you can it's really simple
+As you can see it's really simple
 
 1."Click SELECT WAV FILES" button
 then file open dialog will be shown,chose your wav audiofile(currently you can just chose one file)  
